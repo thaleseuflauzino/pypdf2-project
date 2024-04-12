@@ -1,6 +1,6 @@
 import os
 from PyPDF2 import PdfReader
-from datetime import datetime
+from datetime import datetime, timedelta
 
 def extrair_texto_e_metadados(pdf_path):
     texto = ''
@@ -9,20 +9,23 @@ def extrair_texto_e_metadados(pdf_path):
     with open(pdf_path, 'rb') as pdf_file:
         reader = PdfReader(pdf_file)
         
-        # Extrair texto
-        qtdpage = input("Digite o tanto de páginas que deseja extrair:\n 0 to stop\n 'all' for all pages\n")
-        if qtdpage == 'all':
-            qtdpage = len(reader.pages)
-        else:
-            qtdpage = int(qtdpage)
+        while True:
+            qtdpage = input("\nDigite o tanto de páginas que deseja extrair:\n 0 to stop\n 'all' for all pages\n")
+            if qtdpage.lower() == 'all':
+                qtdpage = len(reader.pages)
+                break
+            if qtdpage.isdigit():
+                qtdpage = int(qtdpage)
+                break
+            else:
+                print("\nDigite um número inteiro valido\n")
+
         for page_num in range(len(reader.pages)):
             if qtdpage == 0:
                 break
             if page_num < qtdpage:
                 page = reader.pages[page_num]
                 texto += page.extract_text()
-
-        # Extrair metadados
         if qtdpage != 0: 
             metadados = reader.metadata
 
@@ -36,36 +39,32 @@ def excluir_pdf(pdf_path):
     os.remove(pdf_path)
 
 def main():
-    # Caminho do PDF
     pdf = input("escreva o nome do arquivo: ")
     pdf_path = pdf + ".pdf"
     
-    # Extrair texto e metadados
     texto, metadados = extrair_texto_e_metadados(pdf_path)
     
-    # Imprimir texto e metadados
-    print('Texto extraído do PDF:')
-    print(texto)
-    print('\nMetadados do PDF:')
-    print(metadados)
-    
-    # Salvar o texto extraído em um arquivo de texto
-    txt_path = 'texto_extraido.txt'
-    salvar_em_txt(texto, txt_path)
-    print(f'\nTexto extraído salvo em "{txt_path}"')
+    if(texto != '' and metadados != {}):
+        print('Texto extraído do PDF:')
+        print(texto)
+        print('\nMetadados do PDF:')
+        print(metadados)
+
+        txt_path = 'texto_extraido.txt'
+        salvar_em_txt(texto, txt_path)
+        print(f'\nTexto extraído salvo em "{txt_path}"')
     
 
-    # Imprimir metadados específicos
     for key in metadados.keys():
         if key == "/CreationDate":
             data_string = metadados[key]
             data_limpa = data_string.split("D:")[1].split("-")[0]
-            data = datetime.strptime(data_limpa, "%Y%m%d%H%M%S")
+            data = datetime.strptime(data_limpa, "%Y%m%d%H%M%S") + timedelta(days = 1) # adiciona 1 dia
             data_formatada = data.strftime("%d/%m/%y")
             print("Data formatada:", data_formatada)
 
     
-    # Excluir o arquivo PDF
+    # apaga o pdf
     # excluir_pdf(pdf_path)
     # print(f'\nPDF "{pdf_path}" excluído com sucesso.')
 
