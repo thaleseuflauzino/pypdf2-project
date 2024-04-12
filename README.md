@@ -17,6 +17,7 @@ Funcionalidades:
 - Exclui o PDF após a extração (comentado por padrão).
 
 Autor: Thales Henrique Euflauzino dos Santos
+
 Data de Criação: 12/04/2024
 
 Instruções de Uso:
