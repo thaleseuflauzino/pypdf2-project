@@ -10,18 +10,21 @@ def extrair_texto_e_metadados(pdf_path):
         reader = PdfReader(pdf_file)
         
         # Extrair texto
-        qtdpage = input("Digite o tanto de páginas que deseja extrair: (0 para tudo)")
-        qtdpage = int(qtdpage)
+        qtdpage = input("Digite o tanto de páginas que deseja extrair:\n 0 to stop\n 'all' for all pages\n")
+        if qtdpage == 'all':
+            qtdpage = len(reader.pages)
+        else:
+            qtdpage = int(qtdpage)
         for page_num in range(len(reader.pages)):
             if qtdpage == 0:
-                page = reader.pages[page_num]
-                texto += page.extract_text()
-            if page_num <= qtdpage:
+                break
+            if page_num < qtdpage:
                 page = reader.pages[page_num]
                 texto += page.extract_text()
 
         # Extrair metadados
-        metadados = reader.metadata
+        if qtdpage != 0: 
+            metadados = reader.metadata
 
     return texto, metadados
 
