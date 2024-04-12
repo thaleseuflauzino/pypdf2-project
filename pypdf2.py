@@ -62,6 +62,14 @@ def main():
             data = datetime.strptime(data_limpa, "%Y%m%d%H%M%S") + timedelta(days = 1) # adiciona 1 dia
             data_formatada = data.strftime("%d/%m/%y")
             print("Data formatada:", data_formatada)
+        if key == "/Title":
+            if metadados[key] == "":
+                print("Documento sem Título")
+            else:
+                print("Título:", metadados[key])
+        if key == "/Producer":
+            print("Autor:", metadados[key])
+            
 
     
     # apaga o pdf
